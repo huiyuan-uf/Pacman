@@ -16,7 +16,6 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
-
 import util
 
 class SearchProblem:
@@ -61,7 +60,6 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-
 def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
@@ -87,17 +85,80 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = []
+    stack = util.Stack()
+    initial_state_with_actions = (problem.getStartState(), [])
+    stack.push(initial_state_with_actions)
+    visited = set()
+    while not stack.isEmpty():
+        cur_state_with_actions = stack.pop()
+
+        # check whether current state is visited
+        if cur_state_with_actions[0] in visited:
+            continue
+        else:
+            visited.add(cur_state_with_actions[0])
+
+        if problem.isGoalState(cur_state_with_actions[0]):
+            return cur_state_with_actions[1]
+        else:
+            successors = problem.getSuccessors(cur_state_with_actions[0])
+            for successor in successors:
+                new_state_with_actions = (successor[0], cur_state_with_actions[1] + [successor[1]])
+                stack.push(new_state_with_actions)
+    return actions
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = []
+    queue = util.Queue()
+    initial_state_with_actions = (problem.getStartState(), [])
+    queue.push(initial_state_with_actions)
+    visited = set()
+    while not queue.isEmpty():
+        cur_state_with_actions = queue.pop()
+
+        # check whether current state is visited
+        if cur_state_with_actions[0] in visited:
+            continue
+        else:
+            visited.add(cur_state_with_actions[0])
+
+        if problem.isGoalState(cur_state_with_actions[0]):
+            return cur_state_with_actions[1]
+        else:
+            successors = problem.getSuccessors(cur_state_with_actions[0])
+            for successor in successors:
+                new_state_with_actions = (successor[0], cur_state_with_actions[1] + [successor[1]])
+                queue.push(new_state_with_actions)
+    return actions
+
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = []
+    queue = util.PriorityQueue()
+    initial_state_with_actions = (problem.getStartState(), [])
+    queue.push(initial_state_with_actions, 0)
+    visited = set()
+    while not queue.isEmpty():
+        cur_state_with_actions = queue.pop()
+
+        # check whether current state is visited
+        if cur_state_with_actions[0] in visited:
+            continue
+        else:
+            visited.add(cur_state_with_actions[0])
+
+        if problem.isGoalState(cur_state_with_actions[0]):
+            return cur_state_with_actions[1]
+        else:
+            successors = problem.getSuccessors(cur_state_with_actions[0])
+            for successor in successors:
+                new_actions = cur_state_with_actions[1] + [successor[1]]
+                new_state_with_actions = (successor[0], new_actions)
+                queue.push(new_state_with_actions, problem.getCostOfActions(new_actions))
+    return actions
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +170,30 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    actions = []
+    queue = util.PriorityQueue()
+    initial_state_with_actions = (problem.getStartState(), [])
+    queue.push(initial_state_with_actions, 0)
+    visited = set()
+    while not queue.isEmpty():
+        cur_state_with_actions = queue.pop()
+
+        # check whether current state is visited
+        if cur_state_with_actions[0] in visited:
+            continue
+        else:
+            visited.add(cur_state_with_actions[0])
+
+        if problem.isGoalState(cur_state_with_actions[0]):
+            return cur_state_with_actions[1]
+        else:
+            successors = problem.getSuccessors(cur_state_with_actions[0])
+            for successor in successors:
+                new_actions = cur_state_with_actions[1] + [successor[1]]
+                new_state_with_actions = (successor[0], new_actions)
+                queue.push(new_state_with_actions, problem.getCostOfActions(new_actions)
+                           + heuristic(successor[0], problem))
+    return actions
 
 
 # Abbreviations
