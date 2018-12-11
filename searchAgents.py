@@ -519,7 +519,30 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        actions = []
+        queue = util.Queue()
+        initial_pos_with_actions = (startPosition, [])
+        queue.push(initial_pos_with_actions)
+        visited = set()
+        while not queue.isEmpty():
+            cur_pos_with_actions = queue.pop()
+            cur_pos = cur_pos_with_actions[0]
+            actions = cur_pos_with_actions[1]
+            # check whether current pos is visited or current pos is wall
+            if cur_pos in visited or walls[cur_pos[0]][cur_pos[1]]:
+                continue
+            else:
+                visited.add(cur_pos)
+
+            if food[cur_pos[0]][cur_pos[1]]:
+                return actions
+            else:
+                successors = problem.getSuccessors(cur_pos)
+                for successor in successors:
+                    new_pos_with_actions = (successor[0], actions + [successor[1]])
+                    queue.push(new_pos_with_actions)
+        return actions
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
